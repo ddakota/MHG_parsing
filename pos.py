@@ -1,23 +1,24 @@
 import re
+from pathlib import Path
+from utils import open_ptb
 
-from utils import openPTB
 
+def replace_pos_tags(treebank1: Path,
+                     treebank2: Path):
 
-def replace_pos_tags(treebank1, treebank2):
-
-    trees1 = openPTB(treebank1)
-    trees2 = openPTB(treebank2)
+    trees1 = open_ptb(treebank1)
+    trees2 = open_ptb(treebank2)
 
     replaced_sentences = []
 
     for tree1, tree2 in zip(trees1, trees2):
 
         tags1 = re.findall("([^\(]+)\s", tree1)
-        #this is done because the parsed output has spaces
-        tree2 = tree2.replace(" (", "(")
+        tree2 = tree2.replace(" (", "(")  # this is done because the parsed output has spaces
+
         tags2 = re.findall("([^\(]+)\s", tree2)
-        assert(len(tags1) == len(tags2))
-        
+        assert (len(tags1) == len(tags2))
+
         replaced_tags = []
         if tree2.split():
             for i in tree2.split()[:-1]:
@@ -40,40 +41,39 @@ def replace_pos_tags(treebank1, treebank2):
             f.write(s + "\n")
 
 
-def compare_pos_tags(treebank1, treebank2):
+def compare_pos_tags(treebank1: Path,
+                     treebank2: Path):
 
-    trees1 = openPTB(treebank1)
-    trees2 = openPTB(treebank2)
+    trees1 = open_ptb(treebank1)
+    trees2 = open_ptb(treebank2)
 
-    posDict = {}
+    pos_dict = {}
 
     for tree1, tree2 in zip(trees1, trees2):
 
         tags1 = re.findall("([^\(]+)\s", tree1)
-        #this is done because the parsed output has spaces
-        tree2 = tree2.replace(" (", "(")
+        tree2 = tree2.replace(" (", "(")  # this is done because the parsed output has spaces
         tags2 = re.findall("([^\(]+)\s", tree2)
-        assert(len(tags1) == len(tags2))
-
+        assert (len(tags1) == len(tags2))
 
         for tag1, tag2 in zip(tags1, tags2):
-            if tag1 in posDict:
-                if tag2 in posDict[tag1]:
-                    posDict[tag1][tag2] += 1
+            if tag1 in pos_dict:
+                if tag2 in pos_dict[tag1]:
+                    pos_dict[tag1][tag2] += 1
                 else:
-                    posDict[tag1][tag2] = 1
+                    pos_dict[tag1][tag2] = 1
             else:
-                posDict[tag1] = {}
-                posDict[tag1][tag2] = 1
+                pos_dict[tag1] = {}
+                pos_dict[tag1][tag2] = 1
 
     with open("pos_acc.txt", "w") as f:
-        for k, v in posDict.items():
+        for k, v in pos_dict.items():
             total = 0
             gold = 0
             f.write("tag: " + k + "\n")
-            for kk, vv in sorted(posDict[k].items(), key=lambda x: x[1], reverse=True):
-                f.write(kk + "\t" + str(posDict[k][kk]) + "\n")
-                total += posDict[k][kk]
+            for kk, vv in sorted(pos_dict[k].items(), key=lambda x: x[1], reverse=True):
+                f.write(kk + "\t" + str(pos_dict[k][kk]) + "\n")
+                total += pos_dict[k][kk]
                 if kk == k:
-                    gold = posDict[k][kk]
+                    gold = pos_dict[k][kk]
             f.write("tag accuracy: " + str(gold / total) + "\n\n")

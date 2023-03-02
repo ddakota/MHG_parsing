@@ -1,18 +1,18 @@
-from transformers import BertTokenizer
+from transformers import BertTokenizer, AutoTokenizer
+from typing import List
+from utils import open_ptb
 
-from utils import openPTB
 
+def wp_512_check(treebank_sentences: List,
+                 tokenizer: str):
 
-def wp_512_check(treebank_sentences):
-
-    tokenizer = BertTokenizer.from_pretrained("bert-base-cased")
-    sentences = openPTB(treebank_sentences)
-
-    sentid = 1
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer)
+    sentences = open_ptb(treebank_sentences)
+    sent_id = 1
     for sentence in sentences:
         wordpiece = tokenizer.tokenize(sentence)
-        # print (wordpiece)
         if len(wordpiece) > 512:
-            print(sentid)
-            # print (sentence)
-        sentid += 1
+            print(sent_id, len(wordpiece))
+        sent_id += 1
+
+
