@@ -2,7 +2,7 @@ import re
 from nltk.tree import Tree
 from pathlib import Path
 
-from utils import open_ptb
+from utils import open_ptb, read_conllu
 
 
 def extract_export(export_file: Path,
@@ -42,7 +42,7 @@ def extract_export(export_file: Path,
             f.write(tree + "\n")
 
 
-def extract_test(export_file: Path,
+def extract_enhg_gold(export_file: Path,
                  output_file: str):
     """todo make removing morph optional"""
     
@@ -91,3 +91,85 @@ def extract_terminals(treebank_file: Path):
     with open(str(treebank_file) + ".terminals", "w") as f:
         for tree in treebank_terminals:
             f.write(" ".join(tree) + "\n")
+
+
+def extract_conlluplus(treebank_file: Path,
+                       morph: False):
+
+    trees = read_conllu(treebank_file)
+    all_ptb_trees = []
+    print(len(trees))
+    for tree in trees:
+        ptb_tree = []
+        rows = tree.split("\n")
+        c = 0
+        for row in rows:
+            #print(row)
+            if row == "": # this is because the last sentence has a empty single row
+                continue
+            if row[0].startswith("#"): # skips the meta data
+                continue
+
+            columns = row.split("\t")
+            if "-" not in columns[0]: #1 word, 2 lemma, 10 ascii, 14 boundary, 20 morph, 21 pos
+                columns[20] = re.sub("_", "", columns[20])
+                columns[20] = re.sub("\*\.", "", columns[20])
+                columns[20] = re.sub("\.", "^", columns[20])
+                columns[20] = re.sub("\*", "", columns[20])
+                columns[2] = re.sub("\(", "<", columns[2])
+                columns[2] = re.sub("\)", ">", columns[2])
+                columns[2] = re.sub(" ", "", columns[2])
+
+                if not morph:
+                    # # pos word
+                    if columns[14] == "_":
+                        if columns[20] != "":
+                            c += 1
+                            ptb_tree.append("("+columns[21]+" "+columns[10]+")")
+                        else:
+                            c += 1
+                            ptb_tree.append("("+columns[21]+" "+columns[10]+")")
+                    if columns[14] != "_":
+                        if columns[20] != "":
+                            c += 1
+                            ptb_tree.append("("+columns[21]+" "+columns[10]+")")
+                            ptb_tree.append("(META " + columns[14][1:])
+
+                        else:
+                            c += 1
+                            ptb_tree.append("("+columns[21]+" "+columns[10]+")")
+                            ptb_tree.append("(META " + columns[14][1:])
+
+
+                if morph:
+                    # # pos+morph word=lemma
+                    if columns[14] == "_":
+                        if columns[20] != "":
+                            c += 1
+                            ptb_tree.append("("+columns[21]+"^"+columns[20]+" "+columns[10]+"="+columns[2]+")")
+                        else:
+                            c += 1
+                            ptb_tree.append("("+columns[21]+" "+columns[10]+"="+columns[2]+")")
+                    if columns[14] != "_":
+
+                        if columns[20] != "":
+                            c += 1
+                            ptb_tree.append("("+columns[21]+"^"+columns[20]+" "+columns[10]+"="+columns[2]+")")
+                            ptb_tree.append("(META " + columns[14][1:])
+
+                        else:
+                            c += 1
+                            ptb_tree.append("("+columns[21]+" "+columns[10]+"="+columns[2]+")")
+                            ptb_tree.append("(META " + columns[14][1:])
+
+        all_ptb_trees.append(" ".join(ptb_tree))
+
+    if not morph:
+        with open(str(treebank_file) + ".brackets_gold", "w") as f:
+            for tree in all_ptb_trees:
+                f.write("(VROOT " + tree + ")\n")
+
+    if morph:
+        with open(str(treebank_file) + ".brackets_gold_w_morph_and_lemma", "w") as f:
+            for tree in all_ptb_trees:
+                f.write("(VROOT " + tree + ")\n")

@@ -1,7 +1,7 @@
 from pathlib import Path
 import typer
 
-from extract import extract_export, extract_test, extract_terminals
+from extract import extract_export, extract_enhg_gold, extract_terminals, extract_conlluplus
 from pos import compare_pos_tags, replace_pos_tags
 from data import get_splits, add_root
 from wordpiece import wp_512_check
@@ -22,14 +22,25 @@ def extract_mhg_export(
 
 
 @app.command()
-def extract_gold(
+def extract_enhg(
         treebank: Path,
         output_file: str,
 ):
     """This commands reads in a gold annotated ENHG treebank and returns a preprocessed, single line ptb formatted tree
     """
     assert treebank.exists()
-    extract_test(treebank, output_file)
+    extract_enhg_gold(treebank, output_file)
+
+
+@app.command()
+def convert_conlluplus(
+        treebank: Path,
+        morph: bool = typer.Option(False, "--morph", help="if to attach morph and lemma"),
+):
+    """This commands converts a conlluplus file into a single line ptb formatted tree. Note that this is a 100% flat tree since no syntactic information is provided.
+    """
+    assert treebank.exists()
+    extract_conlluplus(treebank, morph)
 
 
 @app.command()
