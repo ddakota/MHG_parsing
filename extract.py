@@ -44,7 +44,8 @@ def extract_export(export_file: Path,
 
 def extract_test(export_file: Path,
                  output_file: str):
-
+    """todo make removing morph optional"""
+    
     with open(export_file, "r") as f:
         export_sentences = f.read().split("\n\n")
     print(len(export_sentences))
@@ -78,13 +79,15 @@ def extract_test(export_file: Path,
 
 def extract_terminals(treebank_file: Path):
 
-    treebank_file = open_ptb(treebank_file)
+    treebank = open_ptb(treebank_file)
+
     treebank_terminals = []
-    for tree in treebank_file:
+    for tree in treebank:
+
         terminals = re.findall(r"[^\s]+\)", tree)
         terminals = [w.translate(str.maketrans("", "", "\)")) for w in terminals]
         treebank_terminals.append(terminals)
 
-    with open(str(treebank_file)[:-3] + "terminals", "w") as f:
+    with open(str(treebank_file) + ".terminals", "w") as f:
         for tree in treebank_terminals:
             f.write(" ".join(tree) + "\n")

@@ -24,16 +24,16 @@ def get_splits(treebank: Path):
     ptb = open_ptb(treebank)
     random.shuffle(ptb)
 
-    train = ptb[:100]
-    dev = ptb[100:150]
-    test = ptb[151:]
+    train = ptb[:2400]
+    dev = ptb[2400:2700]
+    test = ptb[2700:]
 
-    with open(str(treebank)[:3] + "_train" + str(treebank)[16:], "w") as f:
+    with open(str(treebank) + "_train", "w") as f:
         for s in train:
             f.write(s + "\n")
-    with open(str(treebank)[:3] + "_dev" + str(treebank)[16:], "w") as f:
+    with open(str(treebank) + "_dev", "w") as f:
         for s in dev:
             f.write(s + "\n")
-    with open(str(treebank)[:3] + "_test" + str(treebank)[16:], "w") as f:
+    with open(str(treebank)+ "_test", "w") as f:
         for s in test:
             f.write(s + "\n")
