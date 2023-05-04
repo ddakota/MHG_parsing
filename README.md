@@ -75,6 +75,7 @@ treetools will do some internal conversions and add a virtual root by default.
 - LRB"RRB should be changed to <">
 - ($LRB LRB) should be changed to (, PARENL)
 - ($LRB RRB) should be changed to (, PARENR)
+After replacing those, find LRB and RRB to catch any remaining instances.
 
 Failure to correct any of these issues will not allow the treebank to be read correctly in various applications. Any future issues should be noted and added to the list.
 
