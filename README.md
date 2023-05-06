@@ -27,7 +27,8 @@ Failure to correct any of these issues will not allow the treebank to be read co
 
 #### To check how many subword tokens exist in a sentence in a ptb treebank (note: the user must specify the tokenizer (e.g.,dbmdz/bert-base-german-cased)  :
 ```
-python app.py wordpiece-512check bert-tokenizer 1533_johann_fierrabras.ver0_2.brackets
+python app.py wordpiece-512check 1533_johann_fierrabras.ver0_2.brackets dbmdz/bert-base-german-cased
+ 
 ```
 
 This prints out to the screen the sentence number (i.e., line number), the length of the sentence based on subword tokens, the text setence, and the tree for all all sentences that are >512 subword units in length.
