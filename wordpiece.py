@@ -22,7 +22,7 @@ def wp_512_check(treebank_sentences: List,
         if len(wordpiece) > 512:
             print(sent_id, len(wordpiece))
             print(sentence)
-            print(treebank[sent_id])
+            print(treebank[sent_id-1])
         sent_id += 1
 
 

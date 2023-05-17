@@ -119,10 +119,17 @@ def extract_conlluplus(treebank_file: Path,
                 columns[2] = re.sub("\(", "<", columns[2])
                 columns[2] = re.sub("\)", ">", columns[2])
                 columns[2] = re.sub(" ", "", columns[2])
+                columns[10] = re.sub("\(\)","<>", columns[10])
+                columns[10] = re.sub("\(","<", columns[10])
+                columns[10] = re.sub("\)",">", columns[10])
+
+
 
                 if not morph:
+                    #print (columns)
                     # # pos word
                     if columns[14] == "_":
+                        #print("14 == _")
                         if columns[20] != "":
                             c += 1
                             ptb_tree.append("("+columns[21]+" "+columns[10]+")")
@@ -130,20 +137,44 @@ def extract_conlluplus(treebank_file: Path,
                             c += 1
                             ptb_tree.append("("+columns[21]+" "+columns[10]+")")
                     if columns[14] != "_":
+                        #print("14 != _")
+                        #print(columns[14])
+                        boundaries = columns[14].split()
+                        #print(boundaries)
                         if columns[20] != "":
+                            #print("columns 20 != ''")
                             c += 1
                             ptb_tree.append("("+columns[21]+" "+columns[10]+")")
-                            ptb_tree.append("(META " + columns[14][1:])
+                            for boundary in boundaries:
+                                if boundary != "|":
+                                    ptb_tree.append("(META " + boundary[1:])
+                                    #print(ptb_tree)
+                                if boundary == "|":
+                                    ptb_tree.append("(META |)")
+                                    #print(ptb_tree)
+                                    #input()
 
                         else:
+                            #print("else")
+                            boundaries = columns[14].split()
                             c += 1
                             ptb_tree.append("("+columns[21]+" "+columns[10]+")")
-                            ptb_tree.append("(META " + columns[14][1:])
+                            for boundary in boundaries:
+                                if boundary != "|":
+                                    ptb_tree.append("(META " + boundary[1:])
+                                    #print(ptb_tree)
+                                if boundary == "|":
+                                    ptb_tree.append("(META |)")
+                                    #print(ptb_tree)
+                                    #input()
+                            #ptb_tree.append("(META " + columns[14][1:])
 
-
+                    #input()
                 if morph:
                     # # pos+morph word=lemma
                     if columns[14] == "_":
+                        boundaries = columns[14].split()
+
                         if columns[20] != "":
                             c += 1
                             ptb_tree.append("("+columns[21]+"^"+columns[20]+" "+columns[10]+"="+columns[2]+")")
@@ -152,16 +183,38 @@ def extract_conlluplus(treebank_file: Path,
                             ptb_tree.append("("+columns[21]+" "+columns[10]+"="+columns[2]+")")
                     if columns[14] != "_":
 
+
                         if columns[20] != "":
+                            boundaries = columns[14].split()
+
                             c += 1
                             ptb_tree.append("("+columns[21]+"^"+columns[20]+" "+columns[10]+"="+columns[2]+")")
-                            ptb_tree.append("(META " + columns[14][1:])
+                            for boundary in boundaries:
+                                if boundary != "|":
+                                    ptb_tree.append("(META " + boundary[1:])
+                                    #print(ptb_tree)
+                                if boundary == "|":
+                                    ptb_tree.append("(META |)")
+                                    #print(ptb_tree)
+                                    #input()
+                            #ptb_tree.append("(META " + columns[14][1:])
 
                         else:
                             c += 1
-                            ptb_tree.append("("+columns[21]+" "+columns[10]+"="+columns[2]+")")
-                            ptb_tree.append("(META " + columns[14][1:])
+                            boundaries = columns[14].split()
 
+                            ptb_tree.append("("+columns[21]+" "+columns[10]+"="+columns[2]+")")
+                            for boundary in boundaries:
+                                if boundary != "|":
+                                    ptb_tree.append("(META " + boundary[1:])
+                                    #print(ptb_tree)
+                                if boundary == "|":
+                                    ptb_tree.append("(META |)")
+                                    #print(ptb_tree)
+                                    #input()
+                            #ptb_tree.append("(META " + columns[14][1:])
+        #print(ptb_tree)
+        #input()
         all_ptb_trees.append(" ".join(ptb_tree))
 
     if not morph:

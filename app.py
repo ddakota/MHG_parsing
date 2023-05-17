@@ -52,7 +52,7 @@ def wordpiece_512check(
     number of wordpieces to see which sentences are > 512.
     # dbmdz/bert-base-german-cased
     """
-    print(sentences)
+    #print(sentences)
     assert sentences.exists()
     wp_512_check(sentences, tokenizer)
 
