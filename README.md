@@ -21,6 +21,7 @@ This returns _KoelhoffChronik#(F163#).conllup.brackets
 - | is extracted as a stand-alone token and should be removed
 - (_ ) is sometimes extracted incorrectly and should be replaced with (_ _)
 - (") is sometimes extracted incorrectly and should be replaced with (META ")
+- $( should be replaced with $_
 
 Failure to correct any of these issues will not allow the treebank to be read correctly in various applications. Any future issues should be noted and added to the list.
 
