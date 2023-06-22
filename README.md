@@ -5,7 +5,7 @@ The app.py file contains sevral stand-alone commands that assist in various data
 
 #### To extract single line ptb style treebank from the gold IPCHG treebank file (note: the user must specify the file name for extracted_treebank_name):
 ```
-python app.py extract-gold 1533_johann_fierrabras.ver0_2.txt 1533_johann_fierrabras.ver0_2.brackets
+python app.py extract-enhg 1533_johann_fierrabras.ver0_2.txt 1533_johann_fierrabras.ver0_2.brackets
 ```
 
 This returns 1533_johann_fierrabras.ver0_2.brackets
